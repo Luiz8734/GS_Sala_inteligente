@@ -29,7 +29,7 @@ FiapSense é um sistema de monitoramento ambiental que lê sensores (temperatura
 
 > Este README contém: código completo do ESP32 com comentários detalhados, instruções para a aplicação Flask que consome MQTT, e passo a passo para executar no Wokwi ou em hardware real.
 
-##🧩 Descrição do Problema
+🧩 Descrição do Problema
 
 Ambientes corporativos, educacionais e laboratoriais dependem diretamente de condições ambientais adequadas para garantir conforto, produtividade e bem-estar. Entretanto, fatores como temperatura elevada, umidade inadequada, iluminação insuficiente e níveis excessivos de ruído podem prejudicar a eficiência das atividades e até mesmo comprometer a saúde das pessoas.
 
@@ -37,7 +37,7 @@ Além disso, muitos espaços não possuem sistemas inteligentes para monitoramen
 
 Esses desafios mostram a necessidade de um dispositivo capaz de medir, interpretar e reagir automaticamente às condições ambientais, fornecendo informações claras e acionando alertas instantâneos quando limites seguros forem ultrapassados.
 
-##🚀 Solução Proposta
+🚀 Solução Proposta
 
 Para resolver esse problema, desenvolvemos o FiapSense, um dispositivo IoT inteligente projetado para monitorar, analisar e otimizar as condições ambientais de qualquer ambiente interno.
 
