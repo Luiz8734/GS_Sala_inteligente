@@ -44,13 +44,14 @@ FiapSense é um sistema de monitoramento ambiental que lê sensores (temperatura
 ## 🔗 Links Importantes
 
 * **Vídeo no YouTube:** *(adicione aqui o link do vídeo)*
-* **Simulação no Wokwi:** *([adicione aqui o link da simulação](https://wokwi.com/projects/447278705835346945))*
+* **Simulação no Wokwi:** *([link da simulação](https://wokwi.com/projects/447278705835346945))*
 
 ## 🖼️ Imagens do Projeto
 
 ### Wokwi
 
-*(adicione aqui imagens ou capturas de tela do circuito no Wokwi)*
+*(<img width="777" height="551" alt="image" src="https://github.com/user-attachments/assets/9d764a75-b67c-4bdb-8e98-c58780d8ffbd" />
+)*
 
 ### Aplicação Web
 
