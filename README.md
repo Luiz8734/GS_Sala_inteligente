@@ -523,17 +523,6 @@ void loop() {
 
 `backend/templates/index.html` — interface simples (tema escuro) que mostra valores atuais e gráfico.
 
-### `requirements`
-
-```
-flask
-paho-mqtt
-matplotlib
-
-# opcional
-flask_socketio
-```
-
 ### `app.py` (exemplo mínimo)
 
 ```python
@@ -1033,7 +1022,9 @@ if __name__ == "__main__":
 3. Instale bibliotecas: `DHT sensor library`, `LiquidCrystal_I2C`, `PubSubClient`, `NewPing`.
 4. Ajuste `ssid`, `password` e `mqtt_server` no código.
 5. Compile e faça upload.
-6. Rode o backend Flask: `pip install -r requirements.txt` → `python app.py`.
+6. Rode o backend Flask: `pip install Flask
+pip install Flask-Cors
+pip install paho-mqtt` → `python app.py`.
 7. Acesse `http://localhost:5000`.
 
 ---
