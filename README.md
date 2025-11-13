@@ -1,112 +1,166 @@
-🌡️💡 FiapSense Dashboard + ESP32 IoT
-👥 Integrantes do Grupo
+# 🌡️💡 FiapSense Dashboard + ESP32 IoT
 
-Luiz Moraes Santos
+## 👥 Integrantes do Grupo
+- **Luiz Moraes Santos**
+- **[Adicione aqui o nome completo do segundo integrante]**
 
-[Adicione aqui o nome completo do segundo integrante]
+---
 
-🧠 Descrição Geral
+## 🧠 Descrição Geral
 
-O FiapSense é uma solução de monitoramento inteligente de ambiente desenvolvida para empresas e instituições de ensino, com o objetivo de melhorar o conforto e a produtividade de seus usuários.
+O **FiapSense** é uma solução de **monitoramento inteligente de ambiente** desenvolvida para **empresas e instituições de ensino**, com o objetivo de **melhorar o conforto e a produtividade** de seus usuários.
 
-O sistema integra um dispositivo físico baseado em ESP32 com sensores e um dashboard web moderno (feito em React + TypeScript) que exibe os dados coletados em tempo real, como:
+O sistema integra um **dispositivo físico baseado em ESP32** com sensores e um **dashboard web moderno** (feito em React + TypeScript) que exibe os dados coletados em tempo real, como:
 
-🌡️ Temperatura
+- 🌡️ **Temperatura**
+- 💧 **Umidade**
+- 💡 **Luminosidade**
+- 🔊 **Ruído**
+- 👤 **Presença**
 
-💧 Umidade
+---
 
-💡 Luminosidade
+## ⚙️ Problema Identificado
 
-🔊 Ruído
+Ambientes de estudo e trabalho frequentemente apresentam **condições inadequadas** de temperatura, ruído e iluminação, afetando diretamente o **bem-estar e a eficiência** das pessoas.  
+Essas variáveis normalmente **não são monitoradas em tempo real**, dificultando ajustes rápidos.
 
-👤 Presença
+---
 
-⚙️ Problema Identificado
+## 💡 Solução Proposta
 
-Ambientes de estudo e trabalho frequentemente apresentam condições inadequadas de temperatura, ruído e iluminação, afetando diretamente o bem-estar e a eficiência das pessoas.
-Essas variáveis normalmente não são monitoradas em tempo real, dificultando ajustes rápidos.
-
-💡 Solução Proposta
-
-O FiapSense Dashboard exibe informações ambientais coletadas por sensores conectados ao ESP32.
-Os dados são enviados via protocolo MQTT e podem ser exibidos em tempo real no painel web.
+O **FiapSense Dashboard** exibe informações ambientais coletadas por sensores conectados ao **ESP32**.  
+Os dados são enviados via **protocolo MQTT** e podem ser exibidos em tempo real no **painel web**.
 
 👉 O dispositivo ainda conta com:
+- **Display LCD** para feedback local.
+- **LEDs coloridos** que indicam o estado do ambiente.
+- **Modo Pausa** ativado por botão, incentivando pausas saudáveis.
+- **Alerta sonoro (buzzer)** quando os parâmetros estão fora do ideal.
 
-Display LCD para feedback local.
+---
 
-LEDs coloridos que indicam o estado do ambiente.
+## 🖼️ Imagens do Projeto
 
-Modo Pausa ativado por botão, incentivando pausas saudáveis.
+### 🔌 Protótipo no Wokwi
+> *(Adicione aqui uma captura de tela do circuito montado no Wokwi)*
 
-Alerta sonoro (buzzer) quando os parâmetros estão fora do ideal.
+### 💻 Dashboard Web
+> *(Adicione aqui imagens da interface React/TypeScript mostrando os sensores em tempo real)*
 
-🖼️ Imagens do Projeto
-🔌 Protótipo no Wokwi
+### ⚙️ Protótipo Físico
+> *(Adicione fotos reais do dispositivo montado com LCD e sensores)*
 
-(Adicione aqui uma captura de tela do circuito montado no Wokwi)
+---
 
-💻 Dashboard Web
+## 🧩 Componentes Utilizados
 
-(Adicione aqui imagens da interface React/TypeScript mostrando os sensores em tempo real)
+| Componente | Função |
+|-------------|--------|
+| **ESP32** | Microcontrolador principal |
+| **Sensor DHT22** | Mede temperatura e umidade |
+| **LDR (Sensor de Luz)** | Mede intensidade luminosa |
+| **Microfone KY-037** | Mede nível de ruído |
+| **Sensor Ultrassônico HC-SR04** | Detecta presença |
+| **Display LCD 16x2 I2C** | Exibe status do ambiente |
+| **LEDs RGB** | Indicam condição (verde = ok, vermelho = alerta, azul = pausa) |
+| **Buzzer** | Emite aviso sonoro |
+| **Botão** | Ativa modo pausa |
 
-🧩 Componentes Utilizados
-Componente	Função
-ESP32	Microcontrolador principal
-Sensor DHT22	Mede temperatura e umidade
-LDR (Sensor de Luz)	Mede intensidade luminosa
-Microfone KY-037	Mede nível de ruído
-Sensor Ultrassônico HC-SR04	Detecta presença
-Display LCD 16x2 I2C	Exibe status do ambiente
-LEDs RGB	Indicam condição (verde = ok, vermelho = alerta, azul = pausa)
-Buzzer	Emite aviso sonoro
-Botão	Ativa modo pausa
-🧰 Tecnologias Utilizadas
+---
 
-🧠 ESP32 — plataforma IoT com WiFi e Bluetooth integrados
+## 🧰 Tecnologias Utilizadas
 
-☁️ MQTT — protocolo leve para comunicação IoT
+- 🧠 **ESP32** — plataforma IoT com WiFi e Bluetooth integrados  
+- ☁️ **MQTT** — protocolo leve para comunicação IoT  
+- 🧩 **React + TypeScript** — frontend moderno e modular  
+- 🎨 **Tailwind CSS** — design responsivo e estilizado  
+- 📟 **Wokwi** — simulação completa do hardware online  
 
-🧩 React + TypeScript — frontend moderno e modular
+---
 
-🎨 Tailwind CSS — design responsivo e estilizado
+## 🧠 Estrutura do Dashboard Web
 
-📟 Wokwi — simulação completa do hardware online
+fiap-sense-dashboard/
+│
+├── index.html # Template principal
+├── metadata.json # Metadados da aplicação
+├── README.md # Documentação (este arquivo)
+│
+└── src/
+├── components/
+│ ├── Footer.tsx # Rodapé
+│ ├── Header.tsx # Cabeçalho
+│ ├── SensorCard.tsx # Card de cada sensor
+│ └── icons.tsx # Ícones SVG
+│
+├── App.tsx # Lógica e layout principal
+├── index.tsx # Ponto de entrada
+└── types.ts # Definições de tipos TypeScript
 
-🧠 Como o Código Funciona
-🔹 Bibliotecas Importadas
-#include <WiFi.h>              // Conexão Wi-Fi
-#include <PubSubClient.h>      // Comunicação MQTT
-#include <LiquidCrystal_I2C.h> // Controle do LCD via I2C
-#include <DHT.h>               // Sensor DHT22 (Temperatura e Umidade)
-#include <NewPing.h>           // Sensor Ultrassônico (Presença)
+yaml
+Copiar código
 
+---
 
-Essas bibliotecas permitem ao ESP32:
+## 🚀 Instruções de Uso
 
-conectar-se à internet,
+### 🧩 Executar o Dashboard
+1. Baixe o projeto ou clone o repositório:
+   ```bash
+   git clone https://github.com/seu-usuario/fiap-sense-dashboard.git
+Acesse a pasta:
 
-enviar dados via MQTT,
+bash
+Copiar código
+cd fiap-sense-dashboard
+Instale as dependências:
 
-exibir informações no LCD,
+bash
+Copiar código
+npm install
+Execute o servidor local:
 
-ler sensores ambientais.
+bash
+Copiar código
+npm run dev
+Abra no navegador o endereço exibido (ex: http://localhost:5173)
 
-🔹 Configuração de Wi-Fi e MQTT
+🔌 Conectar a uma API Real
+Abra o arquivo App.tsx.
+
+Localize a seção --- MOCK DATA GENERATION (FOR DEMO) --- e comente o bloco setInterval.
+
+Localize a seção --- REAL API FETCH LOGIC (DISABLED FOR DEMO) --- e descomente o código.
+
+Certifique-se de que o endpoint (/api/sensors) corresponde ao endereço do servidor backend.
+
+📡 Código ESP32 (com Wi-Fi + MQTT + LCD + Sensores)
+O código abaixo deve ser usado no Wokwi ou Arduino IDE.
+
+cpp
+Copiar código
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <LiquidCrystal_I2C.h>
+#include <DHT.h>
+#include <NewPing.h>
+
+// ---------------- CONFIG WIFI & MQTT ----------------
 const char* ssid = "Wokwi-GUEST";
 const char* password = "";
 const char* mqtt_server = "98.92.204.86";
 const int mqtt_port = 1883;
+const char* mqtt_user = "";
+const char* mqtt_pass = "";
 
+WiFiClient espClient;
+PubSubClient client(espClient);
+unsigned long lastMQTTSend = 0;
 
-Conecte-se à rede WiFi e ao broker MQTT.
-Pode-se usar test.mosquitto.org ou um broker local se desejar testar.
-
-🔹 Mapeamento dos Pinos
-
-Cada sensor e atuador é ligado a uma porta específica:
-
+// ---------------- PINOS ----------------
 #define DHTPIN 4
+#define DHTTYPE DHT22
 #define LDR_PIN 34
 #define MICROFONE_PIN 33
 #define BOTAO_PIN 27
@@ -116,44 +170,277 @@ Cada sensor e atuador é ligado a uma porta específica:
 #define LED_AZUL 5
 #define ULTRASONIC_TRIG_PIN 32
 #define ULTRASONIC_ECHO_PIN 35
+#define MAX_DISTANCE 400
+#define US_ROUNDTRIP_CM 58
 
-🔹 Funções Importantes
-lerLuz()
+// ---------------- OBJETOS ----------------
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+DHT dht(DHTPIN, DHTTYPE);
+NewPing sonar(ULTRASONIC_TRIG_PIN, ULTRASONIC_ECHO_PIN, MAX_DISTANCE);
 
-Calcula a média da luminosidade lida pelo LDR (em %).
+// ---------------- VARIÁVEIS ----------------
+bool modoPausa = false;
+bool ultimoEstadoBotao = HIGH;
+unsigned long lastButtonPress = 0;
+unsigned long pauseStartTime = 0;
+unsigned long lastPauseMessageChange = 0;
+unsigned long pauseDuration = 30000;
 
-calcularMediaRuido()
+#define NUM_LUZ_LEITURAS 10
+int luzBuffer[NUM_LUZ_LEITURAS] = {0};
+int luzIndex = 0;
 
-Filtra o ruído sonoro para evitar leituras falsas.
+int ruidoBuffer[10] = {0};
+int ruidoIndex = 0;
 
-lerDistanciaUltrassonica()
+const char* mensagensPausa[] = {
+  "Respire fundo...",
+  "Alongue-se...",
+  "Olhe longe...",
+  "Hidrate-se!"
+};
+const int numMensagensPausa = sizeof(mensagensPausa) / sizeof(mensagensPausa[0]);
+int pausaMessageIndex = 0;
 
-Usa o sensor HC-SR04 para verificar se há presença humana.
+// ---------------- FUNÇÕES ----------------
+int lerLuz() {
+  int leitura = analogRead(LDR_PIN);
+  leitura = 4095 - leitura;
+  luzBuffer[luzIndex] = leitura;
+  luzIndex = (luzIndex + 1) % NUM_LUZ_LEITURAS;
+  int soma = 0;
+  for (int i = 0; i < NUM_LUZ_LEITURAS; i++) soma += luzBuffer[i];
+  return map(soma / NUM_LUZ_LEITURAS, 0, 4095, 0, 100);
+}
 
-entrarModoPausa() e sairModoPausa()
+int calcularMediaRuido(int val) {
+  ruidoBuffer[ruidoIndex] = val;
+  ruidoIndex = (ruidoIndex + 1) % 10;
+  int soma = 0;
+  for (int i = 0; i < 10; i++) soma += ruidoBuffer[i];
+  return soma / 10;
+}
 
-Controlam o modo descanso, mostrando mensagens motivacionais no LCD e acendendo o LED azul.
+int lerDistanciaUltrassonica() {
+  unsigned int uS = sonar.ping_median(5);
+  int dist = uS / US_ROUNDTRIP_CM;
+  if (dist == 0) dist = MAX_DISTANCE;
+  return dist;
+}
 
-conectarWiFi() e reconnectMQTT()
+void desligarLeds() {
+  digitalWrite(LED_VERMELHO, LOW);
+  digitalWrite(LED_VERDE, LOW);
+  digitalWrite(LED_AZUL, LOW);
+}
 
-Garantem a conexão constante com a rede e o broker MQTT, reconectando automaticamente se cair.
+void acenderLed(int led) {
+  desligarLeds();
+  digitalWrite(led, HIGH);
+}
 
-loop()
+void entrarModoPausa() {
+  modoPausa = true;
+  pauseStartTime = millis();
+  pausaMessageIndex = 0;
+  lastPauseMessageChange = millis();
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("PAUSA ATIVA");
+  lcd.setCursor(0, 1);
+  lcd.print(mensagensPausa[pausaMessageIndex]);
+  tone(BUZZER_PIN, 1200, 100);
+  acenderLed(LED_AZUL);
+}
 
-Lê todos os sensores, toma decisões (alerta ou normal), envia dados via MQTT e atualiza o LCD.
+void sairModoPausa() {
+  modoPausa = false;
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Pausa Encerrada");
+  tone(BUZZER_PIN, 1300, 100);
+  desligarLeds();
+  delay(800);
+  lcd.clear();
+}
 
-🧠 Lógica de Decisão
-Condição	Ação
-Temperatura > 30°C	LED vermelho + alerta sonoro
-Ruído > 1900	LED vermelho + alerta sonoro
-Luz < 30%	LED azul + alerta sonoro
-Nenhum alerta	LED verde + mensagem "Tudo OK"
-Sem presença	LED azul + “Sem Presença” no LCD
-Botão pressionado	Ativa modo pausa por 30s
-📡 Fluxo de Dados (MQTT)
+void atualizarDisplayPausa() {
+  if (millis() - lastPauseMessageChange > 5000) {
+    pausaMessageIndex = (pausaMessageIndex + 1) % numMensagensPausa;
+    lcd.setCursor(0, 1);
+    lcd.print("                ");
+    lcd.setCursor(0, 1);
+    lcd.print(mensagensPausa[pausaMessageIndex]);
+    lastPauseMessageChange = millis();
+    tone(BUZZER_PIN, 1000, 60);
+  }
+}
 
-O dispositivo envia mensagens a cada 5 segundos:
+void conectarWiFi() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Conectando WiFi");
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  int tentativas = 0;
+  while (WiFi.status() != WL_CONNECTED && tentativas < 30) {
+    delay(500);
+    tentativas++;
+  }
+  if (WiFi.status() == WL_CONNECTED) {
+    lcd.clear();
+    lcd.print("WiFi conectado!");
+    lcd.setCursor(0, 1);
+    lcd.print(WiFi.localIP());
+  } else {
+    lcd.clear();
+    lcd.print("Falha WiFi!");
+  }
+}
 
+void reconnectMQTT() {
+  while (!client.connected()) {
+    if (client.connect("ESP32-FIAP", mqtt_user, mqtt_pass)) {
+      client.publish("fiap/status", "ESP32 conectado com sucesso!");
+    } else {
+      delay(3000);
+    }
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+  lcd.init();
+  lcd.backlight();
+  lcd.print("PROJETO AMBIENTE");
+  lcd.setCursor(0, 1);
+  lcd.print("SEGURO - FIAP");
+  delay(2500);
+  lcd.clear();
+  lcd.print("Iniciando...");
+  dht.begin();
+
+  pinMode(LDR_PIN, INPUT);
+  pinMode(MICROFONE_PIN, INPUT);
+  pinMode(BOTAO_PIN, INPUT_PULLUP);
+  pinMode(BUZZER_PIN, OUTPUT);
+  pinMode(LED_VERMELHO, OUTPUT);
+  pinMode(LED_VERDE, OUTPUT);
+  pinMode(LED_AZUL, OUTPUT);
+
+  desligarLeds();
+
+  conectarWiFi();
+  client.setServer(mqtt_server, mqtt_port);
+  lcd.clear();
+}
+
+void loop() {
+  if (WiFi.status() != WL_CONNECTED) conectarWiFi();
+  if (!client.connected()) reconnectMQTT();
+  client.loop();
+
+  bool leituraBotao = digitalRead(BOTAO_PIN);
+  if (leituraBotao == LOW && ultimoEstadoBotao == HIGH && millis() - lastButtonPress > 400) {
+    lastButtonPress = millis();
+    if (!modoPausa) entrarModoPausa();
+    else sairModoPausa();
+  }
+  ultimoEstadoBotao = leituraBotao;
+
+  if (!modoPausa) {
+    float temp = dht.readTemperature();
+    float umid = dht.readHumidity();
+    if (isnan(temp)) temp = 0;
+    if (isnan(umid)) umid = 0;
+
+    int luz = lerLuz();
+    int ruido = calcularMediaRuido(analogRead(MICROFONE_PIN));
+    int dist = lerDistanciaUltrassonica();
+    bool presenca = dist < 150;
+
+    bool alertaCalor = temp > 30;
+    bool alertaRuido = ruido > 1900;
+    bool alertaEscuro = luz < 30;
+
+    int numAlertas = alertaCalor + alertaRuido + alertaEscuro;
+
+    Serial.print("Temp:"); Serial.print(temp, 1);
+    Serial.print(" Umid:"); Serial.print(umid, 0);
+    Serial.print(" Luz:"); Serial.print(luz);
+    Serial.print(" Ruido:"); Serial.print(ruido);
+    Serial.print(" Dist:"); Serial.print(dist);
+    Serial.print(" Presenca:");
+    Serial.println(presenca ? "SIM" : "NAO");
+
+    lcd.clear();
+    if (!presenca) {
+      lcd.print("Sem Presenca");
+      lcd.setCursor(0, 1);
+      lcd.print("Dist: "); lcd.print(dist);
+      acenderLed(LED_AZUL);
+    } else if (numAlertas == 0) {
+      lcd.print("Tudo OK :)");
+      lcd.setCursor(0, 1);
+      lcd.print("T:"); lcd.print(temp, 1);
+      lcd.print("C L:"); lcd.print(luz);
+      acenderLed(LED_VERDE);
+    } else {
+      lcd.print("ALERTA!");
+      lcd.setCursor(0, 1);
+      lcd.print("T:"); lcd.print(temp, 0);
+      lcd.print("C L:"); lcd.print(luz);
+      tone(BUZZER_PIN, 900, 100);
+      acenderLed(LED_VERMELHO);
+    }
+
+    if (millis() - lastMQTTSend > 5000) {
+      char payload[128];
+      snprintf(payload, sizeof(payload),
+               "{\"temp\":%.1f,\"umid\":%.1f,\"luz\":%d,\"ruido\":%d,\"presenca\":%d}",
+               temp, umid, luz, ruido, presenca);
+      client.publish("fiap/sensores", payload);
+      lastMQTTSend = millis();
+    }
+
+    delay(1200);
+  } else {
+    atualizarDisplayPausa();
+    if (millis() - pauseStartTime > pauseDuration) sairModoPausa();
+  }
+}
+🧪 Como Replicar o Projeto (Wokwi)
+Acesse https://wokwi.com/
+
+Crie um novo projeto ESP32
+
+Adicione:
+
+DHT22 → pino 4
+
+LDR → 34
+
+Microfone → 33
+
+Botão → 27
+
+LEDs → 17 (Vermelho), 18 (Verde), 5 (Azul)
+
+Buzzer → 26
+
+Ultrassônico → TRIG 32, ECHO 35
+
+LCD I2C → endereço 0x27
+
+Cole o código acima.
+
+Clique em ▶️ Start Simulation
+
+Veja os dados no Serial Monitor e no LCD virtual
+
+📊 Exemplo de Payload MQTT
+json
+Copiar código
 {
   "temp": 25.3,
   "umid": 60.1,
@@ -161,100 +448,13 @@ O dispositivo envia mensagens a cada 5 segundos:
   "ruido": 1200,
   "presenca": 1
 }
+🧾 Conclusão
+O FiapSense Dashboard + ESP32 IoT mostra como tecnologia e IoT podem melhorar ambientes físicos, promovendo saúde, conforto e produtividade.
+Com arquitetura modular e escalável, está pronto para evoluir com novas funções e integrações.
 
-
-Esses dados podem ser visualizados:
-
-Em um broker MQTT local (como Mosquitto)
-
-Ou no FiapSense Dashboard (versão web)
-
-🧪 Como Replicar o Projeto (Wokwi)
-
-Acesse: 🌐 https://wokwi.com/
-
-Crie um novo projeto ESP32.
-
-Adicione os componentes:
-
-DHT22 → pino 4
-
-LDR → pino 34
-
-Microfone → pino 33
-
-Botão → pino 27
-
-LEDs → pinos 17, 18, 5
-
-Buzzer → pino 26
-
-Sensor Ultrassônico → TRIG = 32, ECHO = 35
-
-LCD I2C (endereço 0x27)
-
-Copie e cole o código completo.
-
-Clique em ▶️ Start Simulation.
-
-Veja os dados aparecendo no Monitor Serial e no LCD virtual.
-
-(💡 Dica: adicione ruído, variações de luz e temperatura simuladas no Wokwi para ver o comportamento realista.)
-
-🧱 Como Replicar o Dashboard Web
-
-Baixe ou clone o repositório do FiapSense Dashboard (React).
-
-Abra a pasta no VS Code.
-
-Instale dependências:
-
-npm install
-
-
-Execute o servidor local:
-
-npm run dev
-
-
-O dashboard abrirá em http://localhost:5173.
-
-📘 Explicação Resumida do Funcionamento
-
-ESP32 lê os sensores.
-
-Os dados são mostrados no LCD e enviados via MQTT.
-
-O FiapSense Dashboard recebe esses dados e exibe em gráficos e cards.
-
-Caso algum valor ultrapasse o limite seguro, LEDs e buzzer sinalizam alerta.
-
-Usuário pode ativar modo pausa com o botão.
-
-🧾 Próximos Passos e Melhorias Futuras
-
-Implementar histórico de dados e gráficos no Dashboard.
-
-Adicionar controle automático de climatização via relé.
-
-Integrar com Google Sheets / Firebase para armazenamento em nuvem.
-
-Criar aplicativo mobile para notificações em tempo real.
-
-🖼️ Espaços para Imagens
+✨ Espaços para Imagens
 🧱 Diagrama de Ligações (Wokwi)
 
-(Adicione aqui um print do circuito montado)
+💻 Captura do Dashboard React
 
-💻 Interface Web (React Dashboard)
-
-(Adicione print das telas principais do dashboard)
-
-⚙️ Protótipo Físico (Montagem Real)
-
-(Adicione fotos do dispositivo montado com LCD e sensores)
-
-🧠 Conclusão
-
-O FiapSense Dashboard + ESP32 IoT demonstra como a tecnologia pode melhorar o ambiente físico, promovendo conforto, saúde e eficiência.
-Com sua arquitetura modular e escalável, ele está pronto para evoluir e ser aplicado em ambientes reais corporativos e educacionais.
+⚙️ Foto do Protótipo Físico
