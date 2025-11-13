@@ -29,6 +29,47 @@ FiapSense é um sistema de monitoramento ambiental que lê sensores (temperatura
 
 > Este README contém: código completo do ESP32 com comentários detalhados, instruções para a aplicação Flask que consome MQTT, e passo a passo para executar no Wokwi ou em hardware real.
 
+##🧩 Descrição do Problema
+
+Ambientes corporativos, educacionais e laboratoriais dependem diretamente de condições ambientais adequadas para garantir conforto, produtividade e bem-estar. Entretanto, fatores como temperatura elevada, umidade inadequada, iluminação insuficiente e níveis excessivos de ruído podem prejudicar a eficiência das atividades e até mesmo comprometer a saúde das pessoas.
+
+Além disso, muitos espaços não possuem sistemas inteligentes para monitoramento contínuo ou tomada de decisão automática, o que dificulta ajustes rápidos e eficazes. A ausência de dados precisos em tempo real também impede gestores e equipes técnicas de analisarem padrões e tomarem medidas preventivas.
+
+Esses desafios mostram a necessidade de um dispositivo capaz de medir, interpretar e reagir automaticamente às condições ambientais, fornecendo informações claras e acionando alertas instantâneos quando limites seguros forem ultrapassados.
+
+##🚀 Solução Proposta
+
+Para resolver esse problema, desenvolvemos o FiapSense, um dispositivo IoT inteligente projetado para monitorar, analisar e otimizar as condições ambientais de qualquer ambiente interno.
+
+A solução utiliza sensores de temperatura, umidade, luminosidade, ruído e presença, conectados a um ESP32, que envia as informações para um sistema em nuvem via MQTT. Os dados são exibidos em tempo real em um painel web intuitivo, permitindo interpretação rápida e tomada de decisão mais eficiente.
+
+Quando algum parâmetro ultrapassa o limite configurado, o sistema executa ações automáticas, como:
+
+Acionamento de alertas no LCD
+
+Notificações via MQTT
+
+Registro de eventos críticos
+
+Possível integração futura com ar-condicionado, iluminação e ventilação
+
+O FiapSense oferece uma solução completa e acessível para controle ambiental:
+
+✔ Monitoramento contínuo
+
+✔ Comunicação em tempo real
+
+✔ Decisões automáticas inteligentes
+
+✔ Painel web moderno para visualização dos dados
+
+✔ Fácil replicação para salas, escritórios e laboratórios
+
+Com isso, organizações de qualquer porte podem manter ambientes mais confortáveis, eficientes e seguros — usando tecnologia moderna, aberta e escalável.
+
+
+
+
 ---
 
 ## 2. Integrantes
