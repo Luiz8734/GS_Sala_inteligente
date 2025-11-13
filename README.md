@@ -55,7 +55,10 @@ FiapSense é um sistema de monitoramento ambiental que lê sensores (temperatura
 
 ### Aplicação Web
 
-*(adicione aqui imagens das telas da aplicação / dashboard)*
+*(<img width="678" height="150" alt="image" src="https://github.com/user-attachments/assets/1241963b-8673-4c8c-ad1e-587931354b41" />
+ / dashboard)*
+*(<img width="518" height="595" alt="image" src="https://github.com/user-attachments/assets/f25b04a6-7c0c-43c4-bbda-301689046131" />
+/ dashboard)*
 
 ---
 
@@ -115,11 +118,8 @@ FiapSense/
 │   └── esp32_fiapsense.ino   # Código comentado completo
 ├── backend/                   # Dashboard Flask
 │   ├── app.py
-│   ├── requirements.txt
 │   └── templates/
 │       └── index.html
-└── docs/                      # Imagens, esquemas, capturas
-    └── wokwi_screenshot.png
 ```
 
 ---
@@ -473,11 +473,9 @@ void loop() {
 
 `backend/app.py` — servidor Flask que se conecta ao broker MQTT e exibe dados em tempo real.
 
-`backend/requirements.txt` — dependências Python.
-
 `backend/templates/index.html` — interface simples (tema escuro) que mostra valores atuais e gráfico.
 
-### `requirements.txt`
+### `requirements`
 
 ```
 flask
