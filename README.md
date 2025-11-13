@@ -38,6 +38,24 @@ FiapSense é um sistema de monitoramento ambiental que lê sensores (temperatura
 | 562142 | Luiz Antonio Morais |
 | 561997 | Nicolas Barnabe     |
 
+
+# FIAPSENSE Dashboard
+
+## 🔗 Links Importantes
+
+* **Vídeo no YouTube:** *(adicione aqui o link do vídeo)*
+* **Simulação no Wokwi:** *([adicione aqui o link da simulação](https://wokwi.com/projects/447278705835346945))*
+
+## 🖼️ Imagens do Projeto
+
+### Wokwi
+
+*(adicione aqui imagens ou capturas de tela do circuito no Wokwi)*
+
+### Aplicação Web
+
+*(adicione aqui imagens das telas da aplicação / dashboard)*
+
 ---
 
 ## 3. Objetivos
