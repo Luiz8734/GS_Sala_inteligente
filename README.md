@@ -1033,8 +1033,4 @@ Licença: MIT (sinta-se livre para adaptar para seu repositório acadêmico)
 
 ---
 
-<!-- Espaço para imagens: adicione prints do Wokwi, fotos do dispositivo e capturas do dashboard abaixo -->
-
-![Wokwi screenshot](docs/wokwi_screenshot.png)
-
 <!-- Fim do README -->
