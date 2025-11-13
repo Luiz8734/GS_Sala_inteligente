@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LNK-TECH | FiapSense Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- CSS Externo -->
+  <link rel="stylesheet" href="/static/style.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1>🌿 FiapSense by LNK-TECH</h1>
+      <p>Monitoramento inteligente para ambientes corporativos e educacionais mais saudáveis e produtivos.</p>
+    </div>
+  </header>
+  <main class="container">
+    <!-- SEÇÃO DE SENSORES -->
+    <section class="sensor-data">
+      <div class="card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+        </div>
+        <h3>Temperatura</h3>
+        <p id="temp">-- °C</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
+        </div>
+        <h3>Umidade</h3>
+        <p id="umid">-- %</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </div>
+        <h3>Luminosidade</h3>
+        <p id="luz">-- lux</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </div>
+        <h3>Ruído</h3>
+        <p id="ruido">-- dB</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-2.17A2 2 0 0 1 14.24 5l-2.48-2.48A2 2 0 0 0 10.17 2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <h3>Presença</h3>
+        <p id="presenca">--</p>
+      </div>
+    </section>
+
+    <!-- GRÁFICO COM TEMPERATURA E RUÍDO (substituído por 2 gráficos separados abaixo, mantendo estrutura original) -->
+    <section class="chart-container">
+      <h2>Monitoramento em Tempo Real</h2>
+      <!-- Gráfico 1: Temperatura + Umidade -->
+      <canvas id="graficoTempUmid"></canvas>
+      <!-- Gráfico 2: Ruído (separado) -->
+      <canvas id="graficoRuido" style="margin-top:20px;"></canvas>
+      <div id="alertas" class="alertas"></div>
+    </section>
+
+    <!-- SEÇÃO: O PROBLEMA -->
+    <section class="info-section">
+      <h2>🚨 O Desafio do Conforto Ambiental</h2>
+      <p>
+        Fatores como temperatura inadequada, iluminação deficiente e ruído excessivo impactam diretamente o bem-estar, a produtividade e a capacidade de concentração em ambientes de trabalho e estudo.
+      </p>
+    </section>
+
+    <!-- SEÇÃO: A SOLUÇÃO -->
+    <section class="info-section">
+      <h2>💡 Nossa Solução: FiapSense</h2>
+      <p>
+        O FiapSense promove ambientes mais confortáveis e saudáveis. Ao equilibrar temperatura, umidade e luminosidade, criamos as condições ideais para o aprendizado e a colaboração, aumentando a satisfação e o desempenho.
+      </p>
+    </section>
+
+    <!-- SEÇÃO: AMBIENTE CORPORATIVO -->
+    <section class="info-section">
+      <h2>🏢 Ambiente Corporativo</h2>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3>Produtividade</h3>
+          <p>Ambientes otimizados aumentam a produtividade dos colaboradores em até 15%, reduzindo fadiga e melhorando o foco.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <h3>Eficiência Energética</h3>
+          <p>Controle inteligente de climatização e iluminação reduz custos operacionais e o impacto ambiental.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 12l2 2 4-4"/><path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/><path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/><path d="M12 3c0 1-1 3-3 3s-3-2-3-3 1-3 3-3 3 2 3 3"/><path d="M12 21c0-1-1-3-3-3s-3 2-3 3 1 3 3 3 3-2 3-3"/>
+            </svg>
+          </div>
+          <h3>Bem-estar</h3>
+          <p>Monitoramento contínuo garante condições ideais de trabalho, reduzindo afastamentos e melhorando a satisfação.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: AMBIENTE ESCOLAR -->
+    <section class="info-section">
+      <h2>🎓 Ambiente Escolar</h2>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M9 10h6"/><path d="M9 14h6"/>
+            </svg>
+          </div>
+          <h3>Aprendizado Otimizado</h3>
+          <p>Condições ambientais ideais melhoram a concentração e o desempenho acadêmico dos estudantes.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3>Segurança</h3>
+          <p>Sensores de presença e monitoramento garantem segurança e controle de acesso em áreas escolares.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3>Conforto Térmico</h3>
+          <p>Temperatura e umidade controladas criam ambientes mais agradáveis, facilitando o aprendizado.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: APLICAÇÕES E BENEFÍCIOS -->
+    <section class="info-section">
+      <h2>🚀 Aplicações e Benefícios</h2>
+      <div class="applications-grid">
+        <div class="application-item">
+          <div class="application-image">
+            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 9h6v6H9z"/>
+            </svg>
+          </div>
+          <h3>Salas de Reunião</h3>
+          <p>Otimização automática de temperatura e iluminação para reuniões mais produtivas e confortáveis.</p>
+        </div>
+        <div class="application-item">
+          <div class="application-image">
+            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+            </svg>
+          </div>
+          <h3>Bibliotecas</h3>
+          <p>Ambientes silenciosos e bem iluminados que favorecem a leitura e o estudo concentrado.</p>
+        </div>
+        <div class="application-item">
+          <div class="application-image">
+            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <h3>Laboratórios</h3>
+          <p>Monitoramento preciso de condições ambientais críticas para experimentos e pesquisas.</p>
+        </div>
+        <div class="application-item">
+          <div class="application-image">
+            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <h3>Escritórios</h3>
+          <p>Controle inteligente que adapta o ambiente às necessidades dos colaboradores ao longo do dia.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <p>© 2025 LNK-TECH | Projeto FiapSense - Inovando ambientes inteligentes.</p>
+  </footer>
+  <script>
+    // inicializa gráficos separados: Temperatura+Umidade e Ruído
+    const ctxTempUmid = document.getElementById("graficoTempUmid").getContext("2d");
+    const graficoTempUmid = new Chart(ctxTempUmid, {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: "Temperatura (°C)",
+            data: [],
+            borderColor: "#00aaff",
+            backgroundColor: "rgba(0, 170, 255, 0.1)",
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            yAxisID: 'y'
+          },
+          {
+            label: "Umidade (%)",
+            data: [],
+            borderColor: "#00ffaa",
+            backgroundColor: "rgba(0, 255, 170, 0.08)",
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            yAxisID: 'y'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        scales: {
+          y: { 
+            type: 'linear',
+            display: true,
+            position: 'left',
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: 'Temperatura / Umidade',
+              color: '#00aaff'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            ticks: {
+              color: '#00aaff'
+            }
+          },
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            ticks: {
+              color: '#8b949e'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            labels: {
+              color: '#e6edf3'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(13, 17, 23, 0.9)',
+            titleColor: '#e6edf3',
+            bodyColor: '#e6edf3',
+            borderColor: '#00aaff',
+            borderWidth: 1
+          }
+        }
+      }
+    });
+
+    const ctxRuido = document.getElementById("graficoRuido").getContext("2d");
+    const graficoRuido = new Chart(ctxRuido, {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: "Ruído (dB)",
+            data: [],
+            borderColor: "#ff6b6b",
+            backgroundColor: "rgba(255, 107, 107, 0.1)",
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        scales: {
+          y1: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: 'Ruído (dB)',
+              color: '#ff6b6b'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            ticks: {
+              color: '#ff6b6b'
+            }
+          },
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            ticks: {
+              color: '#8b949e'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            labels: {
+              color: '#e6edf3'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(13, 17, 23, 0.9)',
+            titleColor: '#e6edf3',
+            bodyColor: '#e6edf3',
+            borderColor: '#ff6b6b',
+            borderWidth: 1
+          }
+        }
+      }
+    });
+
+    async function atualizar() {
+      try {
+        const res = await fetch("/dados");
+        const dados = await res.json();
+
+        document.getElementById("temp").innerText = `${dados.temp.toFixed(1)} °C`;
+        document.getElementById("umid").innerText = `${dados.umid.toFixed(1)} %`;
+        document.getElementById("luz").innerText = `${dados.luz.toFixed(0)} lux`;
+        document.getElementById("ruido").innerText = `${dados.ruido.toFixed(1)} dB`;
+        document.getElementById("presenca").innerText = dados.presenca ? "Detectada" : "Ausente";
+
+        const now = new Date();
+        const timeLabel = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+        
+        // Atualiza Temperatura + Umidade
+        graficoTempUmid.data.labels.push(timeLabel);
+        graficoTempUmid.data.datasets[0].data.push(dados.temp);
+        graficoTempUmid.data.datasets[1].data.push(dados.umid);
+
+        if (graficoTempUmid.data.labels.length > 20) {
+          graficoTempUmid.data.labels.shift();
+          graficoTempUmid.data.datasets[0].data.shift();
+          graficoTempUmid.data.datasets[1].data.shift();
+        }
+        graficoTempUmid.update();
+
+        // Atualiza Ruído
+        graficoRuido.data.labels.push(timeLabel);
+        graficoRuido.data.datasets[0].data.push(dados.ruido);
+
+        if (graficoRuido.data.labels.length > 20) {
+          graficoRuido.data.labels.shift();
+          graficoRuido.data.datasets[0].data.shift();
+        }
+        graficoRuido.update();
+
+        const alertas = [];
+        if (dados.temp > 28) alertas.push("Alerta: Ambiente muito quente!");
+        if (dados.temp < 18) alertas.push("Alerta: Ambiente muito frio!");
+        if (dados.luz < 35) alertas.push("Alerta: Iluminação fraca!");
+        if (dados.ruido > 1900) alertas.push("Alerta: Ruído excessivo detectado!");
+        document.getElementById("alertas").innerText = alertas.join(" | ");
+
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+        document.getElementById("alertas").innerText = "Erro de conexão com o servidor.";
+      } finally {
+        setTimeout(atualizar, 2000);
+      }
+    }
+    
+    document.addEventListener("DOMContentLoaded", atualizar);
+  </script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+/* ----------------------------------
+   DESIGN MODERNO E INOVADOR (DARK THEME + GLASSMORPHISM)
+   ---------------------------------- */
+
+/* -------------------
+   VARIÁVEIS DE COR E ESTILO
+   ------------------- */
+   :root {
+    --cor-primaria: #00aaff;         /* Azul elétrico vibrante */
+    --cor-fundo-inicio: #0d1117;     /* Azul-escuro/Carvão (Início do gradiente) */
+    --cor-fundo-fim: #161b22;        /* Azul-escuro mais suave (Fim do gradiente) */
+    --cor-texto-principal: #e6edf3;  /* Branco suave para texto */
+    --cor-texto-secundario: #8b949e; /* Cinza claro para texto de apoio */
+    
+    /* Estilos para o efeito Glassmorphism */
+    --cor-surface-glass: rgba(255, 255, 255, 0.05); /* Fundo do "vidro" */
+    --cor-borda-glass: rgba(255, 255, 255, 0.1);    /* Borda do "vidro" */
+    
+    --sombra-padrao: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* -------------------
+     ESTILOS GLOBAIS
+     ------------------- */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, var(--cor-fundo-inicio), var(--cor-fundo-fim));
+    background-attachment: fixed;
+    color: var(--cor-texto-principal);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    animation: fadeIn 0.8s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* -------------------
+     HEADER
+     ------------------- */
+  .header {
+    padding: 80px 20px;
+    text-align: center;
+  }
+  
+  .header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    background: -webkit-linear-gradient(45deg, var(--cor-primaria), #ffffff);
+    background: linear-gradient(45deg, var(--cor-primaria), #ffffff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .header p {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--cor-texto-secundario);
+  }
+  
+  /* -------------------
+     CARDS DE SENSORES (ESTILO GLASSMORPHISM)
+     ------------------- */
+  .sensor-data {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+    padding-bottom: 50px;
+  }
+  
+  .card {
+    background: var(--cor-surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); /* Suporte para Safari */
+    border: 1px solid var(--cor-borda-glass);
+    border-radius: 16px;
+    padding: 25px;
+    width: 180px;
+    box-shadow: var(--sombra-padrao);
+    text-align: center;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-8px);
+    border-color: var(--cor-primaria);
+  }
+  
+  .card-icon svg {
+    width: 36px;
+    height: 36px;
+    color: var(--cor-primaria);
+    margin-bottom: 15px;
+  }
+  
+  .card h3 {
+    font-size: 1rem;
+    color: var(--cor-texto-secundario);
+    margin-bottom: 10px;
+    font-weight: 400;
+  }
+  
+  .card p {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--cor-texto-principal);
+  }
+  
+  /* -------------------
+     GRÁFICO E SEÇÕES DE CONTEÚDO
+     ------------------- */
+  .chart-container,
+  .info-section {
+    background: var(--cor-surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--cor-borda-glass);
+    border-radius: 16px;
+    padding: 30px 40px;
+    margin-top: 40px;
+    box-shadow: var(--sombra-padrao);
+  }
+  
+  .chart-container h2,
+  .info-section h2 {
+    font-size: 1.8rem;
+    color: var(--cor-texto-principal);
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  .info-section {
+    text-align: left;
+  }
+  
+  .info-section h2 {
+    text-align: left;
+    border-left: 4px solid var(--cor-primaria);
+    padding-left: 15px;
+  }
+  
+  .info-section p {
+    font-size: 1rem;
+    color: var(--cor-texto-secundario);
+    max-width: 800px;
+  }
+  
+  .alertas {
+    color: #ff4d4d; /* Vermelho mais vibrante para alertas */
+    background-color: rgba(255, 77, 77, 0.1);
+    border: 1px solid rgba(255, 77, 77, 0.2);
+    font-weight: 600;
+    margin-top: 25px;
+    text-align: center;
+    min-height: 24px;
+    padding: 10px;
+    border-radius: 8px;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* -------------------
+     BENEFÍCIOS E APLICAÇÕES
+     ------------------- */
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+  }
+  
+  .benefit-card {
+    background: var(--cor-surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--cor-borda-glass);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .benefit-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--cor-primaria);
+  }
+  
+  .benefit-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: rgba(0, 170, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cor-primaria);
+  }
+  
+  .benefit-card h3 {
+    font-size: 1.3rem;
+    color: var(--cor-texto-principal);
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  .benefit-card p {
+    font-size: 0.95rem;
+    color: var(--cor-texto-secundario);
+    line-height: 1.6;
+  }
+  
+  .applications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+  }
+  
+  .application-item {
+    background: var(--cor-surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--cor-borda-glass);
+    border-radius: 16px;
+    padding: 35px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .application-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 170, 255, 0.2);
+  }
+  
+  .application-image {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 25px;
+    background: linear-gradient(135deg, rgba(0, 170, 255, 0.15), rgba(0, 170, 255, 0.05));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cor-primaria);
+    border: 2px solid rgba(0, 170, 255, 0.2);
+  }
+  
+  .application-item h3 {
+    font-size: 1.4rem;
+    color: var(--cor-texto-principal);
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  .application-item p {
+    font-size: 1rem;
+    color: var(--cor-texto-secundario);
+    line-height: 1.7;
+  }
+  
+  /* -------------------
+     FOOTER
+     ------------------- */
+  .footer {
+    text-align: center;
+    margin-top: 80px;
+    padding: 40px 0;
+    color: var(--cor-texto-secundario);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--cor-borda-glass);
+  }
