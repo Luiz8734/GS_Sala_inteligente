@@ -180,29 +180,30 @@ FiapSense/
 
 ```cpp
 /*
+/*
   esp32_fiapsense.ino
   Projeto: FiapSense - ESP32 + Sensores + MQTT + LCD I2C
-  Autor: Equipe FIAP (adaptado)
+  Autor: Equipe FIAPSENSE
   Observações: Ajuste os pinos conforme seu hardware.
 */
 
-#include <WiFi.h>
-#include <PubSubClient.h>
-#include <LiquidCrystal_I2C.h>
-#include <DHT.h>
-#include <NewPing.h>
+#include <WiFi.h>              // Biblioteca Wi-Fi para ESP32
+#include <PubSubClient.h>      // Biblioteca MQTT
+#include <LiquidCrystal_I2C.h> // Tela LCD I2C
+#include <DHT.h>               // Sensor DHT22
+#include <NewPing.h>           // Sensor Ultrassônico
 
 // ---------------- CONFIG WIFI & MQTT ----------------
-const char* ssid = "Wokwi-GUEST";   // troque pela sua rede
-const char* password = "";          // senha da rede
-const char* mqtt_server = "98.92.204.86"; // broker MQTT
-const int mqtt_port = 1883;
-const char* mqtt_user = "";         // se houver, coloque
-const char* mqtt_pass = "";
+const char* ssid = "Wokwi-GUEST";     // Nome da rede WiFi
+const char* password = "";            // Senha do WiFi
+const char* mqtt_server = "98.92.204.86"; // Endereço do broker MQTT
+const int mqtt_port = 1883;           // Porta MQTT
+const char* mqtt_user = "";           // Usuário MQTT (opcional)
+const char* mqtt_pass = "";           // Senha MQTT (opcional)
 
-WiFiClient espClient;
-PubSubClient client(espClient);
-unsigned long lastMQTTSend = 0;      // controle de envio MQTT
+WiFiClient espClient;                 // Cliente WiFi
+PubSubClient client(espClient);       // Cliente MQTT
+unsigned long lastMQTTSend = 0;       // Controle de frequência de envio MQTT
 
 // ---------------- PINOS ----------------
 #define DHTPIN 4
@@ -219,19 +220,20 @@ unsigned long lastMQTTSend = 0;      // controle de envio MQTT
 #define MAX_DISTANCE 400
 #define US_ROUNDTRIP_CM 58
 
-// ---------------- OBJETOS ----------------
-LiquidCrystal_I2C lcd(0x27, 16, 2); // endereço I2C comum 0x27
-DHT dht(DHTPIN, DHTTYPE);
+// ---------------- OBJETOS DOS SENSORES ----------------
+LiquidCrystal_I2C lcd(0x27, 16, 2);   // LCD I2C (endereço 0x27)
+DHT dht(DHTPIN, DHTTYPE);             // DHT22
 NewPing sonar(ULTRASONIC_TRIG_PIN, ULTRASONIC_ECHO_PIN, MAX_DISTANCE);
 
-// ---------------- VARIÁVEIS ----------------
-bool modoPausa = false;               // flag modo pausa
-bool ultimoEstadoBotao = HIGH;        // para debounce do botão
-unsigned long lastButtonPress = 0;    // timestamp do último press
+// ---------------- VARIÁVEIS DO PROJETO ----------------
+bool modoPausa = false;               // Controle do modo pausa
+bool ultimoEstadoBotao = HIGH;        // Para debounce
+unsigned long lastButtonPress = 0;
 unsigned long pauseStartTime = 0;
 unsigned long lastPauseMessageChange = 0;
-unsigned long pauseDuration = 30000;  // duração automática do modo pausa (30s)
+unsigned long pauseDuration = 30000;  // Duração da pausa (30s)
 
+// Buffers para suavizar leituras
 #define NUM_LUZ_LEITURAS 10
 int luzBuffer[NUM_LUZ_LEITURAS] = {0};
 int luzIndex = 0;
@@ -239,7 +241,7 @@ int luzIndex = 0;
 int ruidoBuffer[10] = {0};
 int ruidoIndex = 0;
 
-const char* mensagensPausa[] = {
+const char* mensagensPausa[] = {      // Frases exibidas no modo pausa
   "Respire fundo...",
   "Alongue-se...",
   "Olhe longe...",
@@ -248,38 +250,43 @@ const char* mensagensPausa[] = {
 const int numMensagensPausa = sizeof(mensagensPausa) / sizeof(mensagensPausa[0]);
 int pausaMessageIndex = 0;
 
-// ---------------- FUNÇÕES AUXILIARES ----------------
+// ---------------- FUNÇÕES DE LEITURA SUAVIZADA ----------------
 
-// Leitura média suave do LDR
+// Lê a luminosidade com filtro de média
 int lerLuz() {
   int leitura = analogRead(LDR_PIN);
-  // No ESP32, ADC é 0..4095 por padrão (12-bit)
-  leitura = 4095 - leitura; // inverter se seu divisor for assim
+  leitura = 4095 - leitura; // Inverte caso tenha divisor
   luzBuffer[luzIndex] = leitura;
   luzIndex = (luzIndex + 1) % NUM_LUZ_LEITURAS;
+
   long soma = 0;
   for (int i = 0; i < NUM_LUZ_LEITURAS; i++) soma += luzBuffer[i];
+
   int media = soma / NUM_LUZ_LEITURAS;
-  return map(media, 0, 4095, 0, 100); // retorna 0..100 (%)
+
+  return map(media, 0, 4095, 0, 100); // Retorna % de luz
 }
 
-// Media simples para evitar picos no ruído
+// Média móvel do ruído para suavizar picos
 int calcularMediaRuido(int val) {
   ruidoBuffer[ruidoIndex] = val;
   ruidoIndex = (ruidoIndex + 1) % 10;
+
   int soma = 0;
   for (int i = 0; i < 10; i++) soma += ruidoBuffer[i];
+
   return soma / 10;
 }
 
-// Leitura de distância com NewPing
+// Leitura da distância ultrassônica
 int lerDistanciaUltrassonica() {
-  unsigned int uS = sonar.ping_median(5); // usa median para suavizar leituras
+  unsigned int uS = sonar.ping_median(5);
   int dist = uS / US_ROUNDTRIP_CM;
-  if (dist == 0) dist = MAX_DISTANCE; // se sem retorno
+  if (dist == 0) dist = MAX_DISTANCE; // Sem retorno = longe demais
   return dist;
 }
 
+// ---------------- CONTROLE DE LEDS ----------------
 void desligarLeds() {
   digitalWrite(LED_VERMELHO, LOW);
   digitalWrite(LED_VERDE, LOW);
@@ -291,18 +298,20 @@ void acenderLed(int led) {
   digitalWrite(led, HIGH);
 }
 
-// ---- Funções de pausa ----
+// ---------------- MODO PAUSA ----------------
 void entrarModoPausa() {
   modoPausa = true;
   pauseStartTime = millis();
   pausaMessageIndex = 0;
   lastPauseMessageChange = millis();
+
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("PAUSA ATIVA");
   lcd.setCursor(0, 1);
   lcd.print(mensagensPausa[pausaMessageIndex]);
-  tone(BUZZER_PIN, 1200, 100);
+
+  tone(BUZZER_PIN, 1200, 100);  // Som de entrada
   acenderLed(LED_AZUL);
 }
 
@@ -317,11 +326,12 @@ void sairModoPausa() {
   lcd.clear();
 }
 
+// Atualiza mensagem do modo pausa
 void atualizarDisplayPausa() {
   if (millis() - lastPauseMessageChange > 5000) {
     pausaMessageIndex = (pausaMessageIndex + 1) % numMensagensPausa;
     lcd.setCursor(0, 1);
-    lcd.print("                "); // limpa linha
+    lcd.print("                ");
     lcd.setCursor(0, 1);
     lcd.print(mensagensPausa[pausaMessageIndex]);
     lastPauseMessageChange = millis();
@@ -329,20 +339,19 @@ void atualizarDisplayPausa() {
   }
 }
 
-// ---------------- WIFI + MQTT ----------------
+// ---------------- WIFI ----------------
 void conectarWiFi() {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Conectando WiFi");
-  Serial.println("🔌 Conectando ao Wi-Fi...");
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
   int tentativas = 0;
+
   while (WiFi.status() != WL_CONNECTED && tentativas < 30) {
     delay(500);
-    Serial.print(".");
     lcd.setCursor(0, 1);
     lcd.print("Tentando...");
     tentativas++;
@@ -350,31 +359,21 @@ void conectarWiFi() {
 
   if (WiFi.status() == WL_CONNECTED) {
     lcd.clear();
-    lcd.print("WiFi conectado!");
+    lcd.print("WiFi Conectado!");
     lcd.setCursor(0, 1);
     lcd.print(WiFi.localIP().toString());
-    Serial.println("\n✅ Wi-Fi conectado!");
-    Serial.print("IP: ");
-    Serial.println(WiFi.localIP());
   } else {
     lcd.clear();
     lcd.print("Falha WiFi!");
-    Serial.println("\n❌ Falha ao conectar ao Wi-Fi!");
   }
 }
 
+// ---------------- MQTT ----------------
 void reconnectMQTT() {
   while (!client.connected()) {
-    Serial.print("Conectando MQTT...");
-    // client.connect( ID, user, pass );
     if (client.connect("ESP32-FIAP", mqtt_user, mqtt_pass)) {
-      Serial.println("✅ Conectado ao servidor MQTT!");
-      client.publish("fiap/status", "ESP32 conectado com sucesso!");
-      // se desejar receber comandos, usa: client.subscribe("fiap/cmd");
+      client.publish("fiap/status", "ESP32 conectado!");
     } else {
-      Serial.print("Falha, rc=");
-      Serial.print(client.state());
-      Serial.println(" tentando em 3s...");
       delay(3000);
     }
   }
@@ -385,17 +384,16 @@ void setup() {
   Serial.begin(115200);
   lcd.init();
   lcd.backlight();
+
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("PROJETO AMBIENTE");
   lcd.setCursor(0, 1);
   lcd.print("SEGURO - FIAP");
   delay(2500);
-  lcd.clear();
-  lcd.print("Iniciando...");
+
   dht.begin();
 
-  // Configuração de pinos
   pinMode(LDR_PIN, INPUT);
   pinMode(MICROFONE_PIN, INPUT);
   pinMode(BOTAO_PIN, INPUT_PULLUP);
@@ -412,18 +410,19 @@ void setup() {
   lcd.clear();
 }
 
-// ---------------- LOOP ----------------
+// ---------------- LOOP PRINCIPAL ----------------
 void loop() {
-  // Garante conexão WiFi
-  if (WiFi.status() != WL_CONNECTED) {
+  // Reconeção automática WiFi
+  if (WiFi.status() != WL_CONNECTED)
     conectarWiFi();
-  }
 
-  // Garante conexão MQTT
-  if (!client.connected()) reconnectMQTT();
+  // Conexão MQTT
+  if (!client.connected())
+    reconnectMQTT();
+
   client.loop();
 
-  // Leitura do botão com debounce simples
+  // BOTÃO COM DEBOUNCE
   bool leituraBotao = digitalRead(BOTAO_PIN);
   if (leituraBotao == LOW && ultimoEstadoBotao == HIGH && millis() - lastButtonPress > 400) {
     lastButtonPress = millis();
@@ -432,78 +431,87 @@ void loop() {
   }
   ultimoEstadoBotao = leituraBotao;
 
+  // ---------- MODO NORMAL ----------
   if (!modoPausa) {
-    // Leitura sensores
+    // Sensores
     float temp = dht.readTemperature();
     float umid = dht.readHumidity();
-    if (isnan(temp)) temp = 0; // tratamento simples
+    if (isnan(temp)) temp = 0;
     if (isnan(umid)) umid = 0;
 
     int luz = lerLuz();
     int ruidoRaw = analogRead(MICROFONE_PIN);
     int ruido = calcularMediaRuido(ruidoRaw);
     int dist = lerDistanciaUltrassonica();
-    bool presenca = dist < 150; // threshold de presença
+    bool presenca = dist < 150;
 
     bool alertaCalor = temp > 30;
-    bool alertaRuido = ruido > 1900; // ajuste conforme seu sensor
+    bool alertaRuido = ruido > 1900;
     bool alertaEscuro = luz < 30;
 
     int numAlertas = alertaCalor + alertaRuido + alertaEscuro;
 
-    // Log serial em uma linha compacta
-    Serial.print("Temp:"); Serial.print(temp, 1); Serial.print("C ");
-    Serial.print("Umid:"); Serial.print(umid, 0); Serial.print("% ");
-    Serial.print("Luz:"); Serial.print(luz); Serial.print("% ");
-    Serial.print("Ruido:"); Serial.print(ruido); Serial.print(" ");
-    Serial.print("Dist:"); Serial.print(dist); Serial.print("cm ");
-    Serial.print("Presenca:"); Serial.println(presenca ? "SIM" : "NAO");
-
-    // Atualiza LCD com lógica simples de prioridades
+    // LCD e LEDs
     lcd.clear();
+
     if (!presenca) {
       lcd.setCursor(0, 0);
       lcd.print("Sem Presenca");
       lcd.setCursor(0, 1);
-      lcd.print("Dist: "); lcd.print(dist); lcd.print("cm");
+      lcd.print("Dist: ");
+      lcd.print(dist);
       acenderLed(LED_AZUL);
+
     } else if (numAlertas == 0) {
       lcd.setCursor(0, 0);
       lcd.print("Tudo OK :)");
       lcd.setCursor(0, 1);
-      lcd.print("T:"); lcd.print(temp, 1); lcd.print("C L:"); lcd.print(luz);
+      lcd.print("T:");
+      lcd.print(temp);
+      lcd.print(" L:");
+      lcd.print(luz);
       acenderLed(LED_VERDE);
+
     } else {
       lcd.setCursor(0, 0);
       if (alertaCalor) lcd.print("Calor ");
       if (alertaRuido) lcd.print("Ruido ");
       if (alertaEscuro) lcd.print("Escuro");
+
       lcd.setCursor(0, 1);
-      lcd.print("T:"); lcd.print(temp, 0); lcd.print("C L:"); lcd.print(luz); lcd.print("%");
-      // sons diferenciados para alertas
+      lcd.print("T:");
+      lcd.print(temp);
+      lcd.print(" L:");
+      lcd.print(luz);
+
       if (alertaCalor) tone(BUZZER_PIN, 900, 100);
       if (alertaRuido) tone(BUZZER_PIN, 1000, 100);
       if (alertaEscuro) tone(BUZZER_PIN, 800, 100);
+
       acenderLed(numAlertas == 1 ? LED_AZUL : LED_VERMELHO);
     }
 
-    // --- Publicação MQTT a cada 5 segundos ---
+    // ENVIO MQTT A CADA 5s
     if (millis() - lastMQTTSend > 5000) {
       char payload[256];
       snprintf(payload, sizeof(payload),
-               "{\"temp\":%.1f,\"umid\":%.1f,\"luz\":%d,\"ruido\":%d,\"presenca\":%d}",
-               temp, umid, luz, ruido, presenca);
+        "{\"temp\":%.1f,\"umid\":%.1f,\"luz\":%d,\"ruido\":%d,\"presenca\":%d}",
+        temp, umid, luz, ruido, presenca);
+
       client.publish("fiap/sensores", payload);
       lastMQTTSend = millis();
     }
 
-    delay(1200); // ajuste de taxa de amostragem
+    delay(1200);
+
   } else {
-    // Modo pausa — exibe mensagens tranquilizadoras
+    // ---------- MODO PAUSA ----------
     atualizarDisplayPausa();
-    if (millis() - pauseStartTime > pauseDuration) sairModoPausa();
+    if (millis() - pauseStartTime > pauseDuration)
+      sairModoPausa();
   }
 }
+
 ```
 
 **Observações e ajustes**
@@ -532,10 +540,12 @@ from flask_cors import CORS
 import paho.mqtt.client as mqtt
 import threading
 
+# Cria a aplicação Flask
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Libera acesso para o front-end (evita erro de CORS)
 
 # ------------------- VARIÁVEIS GLOBAIS -------------------
+# Dicionário que armazena os dados recebidos pelo MQTT
 dados_sensores = {
     "temp": 0,
     "umid": 0,
@@ -545,47 +555,54 @@ dados_sensores = {
 }
 
 # ------------------- CONFIG MQTT -------------------
-MQTT_BROKER = "98.92.204.86"
-MQTT_PORT = 1883
-MQTT_TOPIC = "fiap/sensores"
+MQTT_BROKER = "98.92.204.86"   # IP do servidor MQTT
+MQTT_PORT = 1883               # Porta padrão
+MQTT_TOPIC = "fiap/sensores"   # Tópico a ser recebido
 
+# Função executada quando o cliente MQTT conecta ao broker
 def on_connect(client, userdata, flags, rc):
     print(" Conectado ao MQTT com código:", rc)
-    client.subscribe(MQTT_TOPIC)
+    client.subscribe(MQTT_TOPIC)  # Inscreve no tópico
 
+# Função executada quando chega uma mensagem no tópico inscrito
 def on_message(client, userdata, msg):
     global dados_sensores
     import json
     try:
-        payload = msg.payload.decode()
-        dados = json.loads(payload)
-        dados_sensores.update(dados)
+        payload = msg.payload.decode()  # Converte bytes → texto
+        dados = json.loads(payload)     # Converte JSON → dict
+        dados_sensores.update(dados)    # Atualiza dados globais
         print(" Dados recebidos:", dados_sensores)
     except Exception as e:
         print("Erro ao processar mensagem MQTT:", e)
 
+# Função que inicia o cliente MQTT
 def iniciar_mqtt():
     client = mqtt.Client()
-    client.on_connect = on_connect
-    client.on_message = on_message
-    client.connect(MQTT_BROKER, MQTT_PORT, 60)
-    client.loop_forever()
+    client.on_connect = on_connect   # Callback de conexão
+    client.on_message = on_message   # Callback de mensagem
+    client.connect(MQTT_BROKER, MQTT_PORT, 60)  # Conecta ao broker
+    client.loop_forever()  # Mantém o MQTT rodando para sempre
 
-# Iniciar MQTT em thread separada
+# Inicia o MQTT em uma thread separada do Flask
 threading.Thread(target=iniciar_mqtt, daemon=True).start()
 
 # ------------------- ROTAS WEB -------------------
+# Página principal (renderiza index.html)
 @app.route("/")
 def index():
     return render_template("index.html")
 
+# Rota que retorna os dados dos sensores em JSON
 @app.route("/dados")
 def dados():
     return jsonify(dados_sensores)
 
+# Inicia o servidor Flask
 if __name__ == "__main__":
     print(" Servidor Flask rodando em http://127.0.0.1:5000")
     app.run(host="0.0.0.0", port=5000, debug=True)
+
 
 ```
 
@@ -597,408 +614,94 @@ if __name__ == "__main__":
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LNK-TECH | FiapSense Dashboard</title>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>FiapSense | LNK-TECH</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <!-- CSS Externo -->
   <link rel="stylesheet" href="/static/style.css">
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
   <header class="header">
-    <div class="container">
-      <h1>🌿 FiapSense by LNK-TECH</h1>
-      <p>Monitoramento inteligente para ambientes corporativos e educacionais mais saudáveis e produtivos.</p>
-    </div>
+    <h1>🌿 FiapSense</h1>
+    <p>Monitoramento inteligente do ambiente</p>
   </header>
+
   <main class="container">
-    <!-- SEÇÃO DE SENSORES -->
+
+    <!-- CARDS DE SENSORES -->
     <section class="sensor-data">
-      <div class="card">
-        <div class="card-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
-        </div>
-        <h3>Temperatura</h3>
-        <p id="temp">-- °C</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
-        </div>
-        <h3>Umidade</h3>
-        <p id="umid">-- %</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-        </div>
-        <h3>Luminosidade</h3>
-        <p id="luz">-- lux</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-        </div>
-        <h3>Ruído</h3>
-        <p id="ruido">-- dB</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-2.17A2 2 0 0 1 14.24 5l-2.48-2.48A2 2 0 0 0 10.17 2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/><circle cx="12" cy="12" r="3"/></svg>
-        </div>
-        <h3>Presença</h3>
-        <p id="presenca">--</p>
-      </div>
+      <div class="card"><h3>Temperatura</h3><p id="temp">-- °C</p></div>
+      <div class="card"><h3>Umidade</h3><p id="umid">-- %</p></div>
+      <div class="card"><h3>Luminosidade</h3><p id="luz">-- lux</p></div>
+      <div class="card"><h3>Ruído</h3><p id="ruido">-- dB</p></div>
+      <div class="card"><h3>Presença</h3><p id="presenca">--</p></div>
     </section>
 
-    <!-- GRÁFICO COM TEMPERATURA E RUÍDO (substituído por 2 gráficos separados abaixo, mantendo estrutura original) -->
+    <!-- GRÁFICOS -->
     <section class="chart-container">
       <h2>Monitoramento em Tempo Real</h2>
-      <!-- Gráfico 1: Temperatura + Umidade -->
       <canvas id="graficoTempUmid"></canvas>
-      <!-- Gráfico 2: Ruído (separado) -->
-      <canvas id="graficoRuido" style="margin-top:20px;"></canvas>
+      <canvas id="graficoRuido" style="margin-top: 20px;"></canvas>
       <div id="alertas" class="alertas"></div>
     </section>
 
-    <!-- SEÇÃO: O PROBLEMA -->
-    <section class="info-section">
-      <h2>🚨 O Desafio do Conforto Ambiental</h2>
-      <p>
-        Fatores como temperatura inadequada, iluminação deficiente e ruído excessivo impactam diretamente o bem-estar, a produtividade e a capacidade de concentração em ambientes de trabalho e estudo.
-      </p>
-    </section>
-
-    <!-- SEÇÃO: A SOLUÇÃO -->
-    <section class="info-section">
-      <h2>💡 Nossa Solução: FiapSense</h2>
-      <p>
-        O FiapSense promove ambientes mais confortáveis e saudáveis. Ao equilibrar temperatura, umidade e luminosidade, criamos as condições ideais para o aprendizado e a colaboração, aumentando a satisfação e o desempenho.
-      </p>
-    </section>
-
-    <!-- SEÇÃO: AMBIENTE CORPORATIVO -->
-    <section class="info-section">
-      <h2>🏢 Ambiente Corporativo</h2>
-      <div class="benefits-grid">
-        <div class="benefit-card">
-          <div class="benefit-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-          </div>
-          <h3>Produtividade</h3>
-          <p>Ambientes otimizados aumentam a produtividade dos colaboradores em até 15%, reduzindo fadiga e melhorando o foco.</p>
-        </div>
-        <div class="benefit-card">
-          <div class="benefit-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-            </svg>
-          </div>
-          <h3>Eficiência Energética</h3>
-          <p>Controle inteligente de climatização e iluminação reduz custos operacionais e o impacto ambiental.</p>
-        </div>
-        <div class="benefit-card">
-          <div class="benefit-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 12l2 2 4-4"/><path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/><path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/><path d="M12 3c0 1-1 3-3 3s-3-2-3-3 1-3 3-3 3 2 3 3"/><path d="M12 21c0-1-1-3-3-3s-3 2-3 3 1 3 3 3 3-2 3-3"/>
-            </svg>
-          </div>
-          <h3>Bem-estar</h3>
-          <p>Monitoramento contínuo garante condições ideais de trabalho, reduzindo afastamentos e melhorando a satisfação.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SEÇÃO: AMBIENTE ESCOLAR -->
-    <section class="info-section">
-      <h2>🎓 Ambiente Escolar</h2>
-      <div class="benefits-grid">
-        <div class="benefit-card">
-          <div class="benefit-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M9 10h6"/><path d="M9 14h6"/>
-            </svg>
-          </div>
-          <h3>Aprendizado Otimizado</h3>
-          <p>Condições ambientais ideais melhoram a concentração e o desempenho acadêmico dos estudantes.</p>
-        </div>
-        <div class="benefit-card">
-          <div class="benefit-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-          </div>
-          <h3>Segurança</h3>
-          <p>Sensores de presença e monitoramento garantem segurança e controle de acesso em áreas escolares.</p>
-        </div>
-        <div class="benefit-card">
-          <div class="benefit-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-          </div>
-          <h3>Conforto Térmico</h3>
-          <p>Temperatura e umidade controladas criam ambientes mais agradáveis, facilitando o aprendizado.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SEÇÃO: APLICAÇÕES E BENEFÍCIOS -->
-    <section class="info-section">
-      <h2>🚀 Aplicações e Benefícios</h2>
-      <div class="applications-grid">
-        <div class="application-item">
-          <div class="application-image">
-            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 9h6v6H9z"/>
-            </svg>
-          </div>
-          <h3>Salas de Reunião</h3>
-          <p>Otimização automática de temperatura e iluminação para reuniões mais produtivas e confortáveis.</p>
-        </div>
-        <div class="application-item">
-          <div class="application-image">
-            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
-            </svg>
-          </div>
-          <h3>Bibliotecas</h3>
-          <p>Ambientes silenciosos e bem iluminados que favorecem a leitura e o estudo concentrado.</p>
-        </div>
-        <div class="application-item">
-          <div class="application-image">
-            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-            </svg>
-          </div>
-          <h3>Laboratórios</h3>
-          <p>Monitoramento preciso de condições ambientais críticas para experimentos e pesquisas.</p>
-        </div>
-        <div class="application-item">
-          <div class="application-image">
-            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-          </div>
-          <h3>Escritórios</h3>
-          <p>Controle inteligente que adapta o ambiente às necessidades dos colaboradores ao longo do dia.</p>
-        </div>
-      </div>
-    </section>
   </main>
+
   <footer class="footer">
-    <p>© 2025 LNK-TECH | Projeto FiapSense - Inovando ambientes inteligentes.</p>
+    <p>© 2025 LNK-TECH | Projeto FiapSense</p>
   </footer>
+
+  <!-- SCRIPT -->
   <script>
-    // inicializa gráficos separados: Temperatura+Umidade e Ruído
-    const ctxTempUmid = document.getElementById("graficoTempUmid").getContext("2d");
-    const graficoTempUmid = new Chart(ctxTempUmid, {
+    // GRÁFICO TEMPERATURA / UMIDADE
+    const graficoTempUmid = new Chart(document.getElementById("graficoTempUmid"), {
       type: "line",
-      data: {
-        labels: [],
-        datasets: [
-          {
-            label: "Temperatura (°C)",
-            data: [],
-            borderColor: "#00aaff",
-            backgroundColor: "rgba(0, 170, 255, 0.1)",
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4,
-            yAxisID: 'y'
-          },
-          {
-            label: "Umidade (%)",
-            data: [],
-            borderColor: "#00ffaa",
-            backgroundColor: "rgba(0, 255, 170, 0.08)",
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4,
-            yAxisID: 'y'
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        interaction: {
-          mode: 'index',
-          intersect: false,
-        },
-        scales: {
-          y: { 
-            type: 'linear',
-            display: true,
-            position: 'left',
-            beginAtZero: false,
-            title: {
-              display: true,
-              text: 'Temperatura / Umidade',
-              color: '#00aaff'
-            },
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
-            },
-            ticks: {
-              color: '#00aaff'
-            }
-          },
-          x: {
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
-            },
-            ticks: {
-              color: '#8b949e'
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            display: true,
-            labels: {
-              color: '#e6edf3'
-            }
-          },
-          tooltip: {
-            backgroundColor: 'rgba(13, 17, 23, 0.9)',
-            titleColor: '#e6edf3',
-            bodyColor: '#e6edf3',
-            borderColor: '#00aaff',
-            borderWidth: 1
-          }
-        }
-      }
+      data: { labels: [], datasets: [
+        { label: "Temperatura", data: [], borderColor: "#00aaff", tension: 0.4 },
+        { label: "Umidade", data: [], borderColor: "#00ffaa", tension: 0.4 }
+      ]},
+      options: { responsive: true }
     });
 
-    const ctxRuido = document.getElementById("graficoRuido").getContext("2d");
-    const graficoRuido = new Chart(ctxRuido, {
+    // GRÁFICO RUÍDO
+    const graficoRuido = new Chart(document.getElementById("graficoRuido"), {
       type: "line",
-      data: {
-        labels: [],
-        datasets: [
-          {
-            label: "Ruído (dB)",
-            data: [],
-            borderColor: "#ff6b6b",
-            backgroundColor: "rgba(255, 107, 107, 0.1)",
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4,
-            yAxisID: 'y1'
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        interaction: {
-          mode: 'index',
-          intersect: false,
-        },
-        scales: {
-          y1: {
-            type: 'linear',
-            display: true,
-            position: 'left',
-            beginAtZero: false,
-            title: {
-              display: true,
-              text: 'Ruído (dB)',
-              color: '#ff6b6b'
-            },
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
-            },
-            ticks: {
-              color: '#ff6b6b'
-            }
-          },
-          x: {
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
-            },
-            ticks: {
-              color: '#8b949e'
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            display: true,
-            labels: {
-              color: '#e6edf3'
-            }
-          },
-          tooltip: {
-            backgroundColor: 'rgba(13, 17, 23, 0.9)',
-            titleColor: '#e6edf3',
-            bodyColor: '#e6edf3',
-            borderColor: '#ff6b6b',
-            borderWidth: 1
-          }
-        }
-      }
+      data: { labels: [], datasets: [
+        { label: "Ruído (dB)", data: [], borderColor: "#ff6b6b", tension: 0.4 }
+      ]},
+      options: { responsive: true }
     });
 
+    // FUNÇÃO QUE PEGA OS DADOS DO BACKEND
     async function atualizar() {
-      try {
-        const res = await fetch("/dados");
-        const dados = await res.json();
+      const res = await fetch("/dados");
+      const d = await res.json();
 
-        document.getElementById("temp").innerText = `${dados.temp.toFixed(1)} °C`;
-        document.getElementById("umid").innerText = `${dados.umid.toFixed(1)} %`;
-        document.getElementById("luz").innerText = `${dados.luz.toFixed(0)} lux`;
-        document.getElementById("ruido").innerText = `${dados.ruido.toFixed(1)} dB`;
-        document.getElementById("presenca").innerText = dados.presenca ? "Detectada" : "Ausente";
+      document.getElementById("temp").innerText = `${d.temp} °C`;
+      document.getElementById("umid").innerText = `${d.umid} %`;
+      document.getElementById("luz").innerText = `${d.luz} lux`;
+      document.getElementById("ruido").innerText = `${d.ruido} dB`;
+      document.getElementById("presenca").innerText = d.presenca ? "Sim" : "Não";
 
-        const now = new Date();
-        const timeLabel = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-        
-        // Atualiza Temperatura + Umidade
-        graficoTempUmid.data.labels.push(timeLabel);
-        graficoTempUmid.data.datasets[0].data.push(dados.temp);
-        graficoTempUmid.data.datasets[1].data.push(dados.umid);
+      const hora = new Date().toLocaleTimeString();
 
-        if (graficoTempUmid.data.labels.length > 20) {
-          graficoTempUmid.data.labels.shift();
-          graficoTempUmid.data.datasets[0].data.shift();
-          graficoTempUmid.data.datasets[1].data.shift();
-        }
-        graficoTempUmid.update();
+      graficoTempUmid.data.labels.push(hora);
+      graficoTempUmid.data.datasets[0].data.push(d.temp);
+      graficoTempUmid.data.datasets[1].data.push(d.umid);
+      graficoTempUmid.update();
 
-        // Atualiza Ruído
-        graficoRuido.data.labels.push(timeLabel);
-        graficoRuido.data.datasets[0].data.push(dados.ruido);
-
-        if (graficoRuido.data.labels.length > 20) {
-          graficoRuido.data.labels.shift();
-          graficoRuido.data.datasets[0].data.shift();
-        }
-        graficoRuido.update();
-
-        const alertas = [];
-        if (dados.temp > 28) alertas.push("Alerta: Ambiente muito quente!");
-        if (dados.temp < 18) alertas.push("Alerta: Ambiente muito frio!");
-        if (dados.luz < 35) alertas.push("Alerta: Iluminação fraca!");
-        if (dados.ruido > 1900) alertas.push("Alerta: Ruído excessivo detectado!");
-        document.getElementById("alertas").innerText = alertas.join(" | ");
-
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-        document.getElementById("alertas").innerText = "Erro de conexão com o servidor.";
-      } finally {
-        setTimeout(atualizar, 2000);
-      }
+      graficoRuido.data.labels.push(hora);
+      graficoRuido.data.datasets[0].data.push(d.ruido);
+      graficoRuido.update();
     }
-    
-    document.addEventListener("DOMContentLoaded", atualizar);
+
+    setInterval(atualizar, 2000);
   </script>
+
 </body>
 </html>
+
 
 ```
 
