@@ -29,45 +29,52 @@ FiapSense é um sistema de monitoramento ambiental que lê sensores (temperatura
 
 > Este README contém: código completo do ESP32 com comentários detalhados, instruções para a aplicação Flask que consome MQTT, e passo a passo para executar no Wokwi ou em hardware real.
 
-🧩 Descrição do Problema
+## 🛑 Problema Identificado
 
-Ambientes corporativos, educacionais e laboratoriais dependem diretamente de condições ambientais adequadas para garantir conforto, produtividade e bem-estar. Entretanto, fatores como temperatura elevada, umidade inadequada, iluminação insuficiente e níveis excessivos de ruído podem prejudicar a eficiência das atividades e até mesmo comprometer a saúde das pessoas.
+Ambientes corporativos e educacionais frequentemente sofrem com condições ambientais inadequadas, como **temperatura elevada, baixa umidade, excesso de ruído e luminosidade inadequada**. Esses fatores afetam diretamente:
 
-Além disso, muitos espaços não possuem sistemas inteligentes para monitoramento contínuo ou tomada de decisão automática, o que dificulta ajustes rápidos e eficazes. A ausência de dados precisos em tempo real também impede gestores e equipes técnicas de analisarem padrões e tomarem medidas preventivas.
+- **Conforto dos colaboradores e alunos**
+- **Produtividade** e concentração
+- **Qualidade das aulas e reuniões**
+- **Saúde e bem-estar** no ambiente
+- Consumo de energia devido a climatização mal regulada
 
-Esses desafios mostram a necessidade de um dispositivo capaz de medir, interpretar e reagir automaticamente às condições ambientais, fornecendo informações claras e acionando alertas instantâneos quando limites seguros forem ultrapassados.
+Além disso, a maioria dos ambientes não possui monitoramento contínuo, o que impede ações rápidas e inteligentes quando algum parâmetro ultrapassa o ideal.
 
-🚀 Solução Proposta
+---
 
-Para resolver esse problema, desenvolvemos o FiapSense, um dispositivo IoT inteligente projetado para monitorar, analisar e otimizar as condições ambientais de qualquer ambiente interno.
+## ✅ Solução Proposta
 
-A solução utiliza sensores de temperatura, umidade, luminosidade, ruído e presença, conectados a um ESP32, que envia as informações para um sistema em nuvem via MQTT. Os dados são exibidos em tempo real em um painel web intuitivo, permitindo interpretação rápida e tomada de decisão mais eficiente.
+O **FiapSense** surge como uma solução inteligente de monitoramento ambiental baseada em **ESP32 + sensores integrados**. A proposta consiste em:
 
-Quando algum parâmetro ultrapassa o limite configurado, o sistema executa ações automáticas, como:
+### 🔍 Monitoramento em Tempo Real
+O dispositivo coleta continuamente:
+- Temperatura  
+- Umidade  
+- Luminosidade  
+- Níveis de ruído  
+- Presença/movimento  
 
-Acionamento de alertas no LCD
+Esses dados são enviados via **MQTT** para um dashboard web moderno e responsivo.
 
-Notificações via MQTT
+### 🔔 Alertas Automáticos
+Quando qualquer parâmetro está fora do ideal, o sistema:
+- Gera **alertas visuais** no dashboard  
+- Aciona **notificações automáticas**  
+- Pode ativar recursos como alarme, LED RGB ou mensagens LCD  
 
-Registro de eventos críticos
+### 📊 Dashboard Interativo
+A aplicação web exibe:
+- Gráficos individuais e históricos  
+- Indicadores instantâneos  
+- Status do ambiente  
+- Informações sobre tendências e anomalias  
 
-Possível integração futura com ar-condicionado, iluminação e ventilação
-
-O FiapSense oferece uma solução completa e acessível para controle ambiental:
-
-✔ Monitoramento contínuo
-
-✔ Comunicação em tempo real
-
-✔ Decisões automáticas inteligentes
-
-✔ Painel web moderno para visualização dos dados
-
-✔ Fácil replicação para salas, escritórios e laboratórios
-
-Com isso, organizações de qualquer porte podem manter ambientes mais confortáveis, eficientes e seguros — usando tecnologia moderna, aberta e escalável.
-
-
+### ⚙️ Tomada de Decisão Inteligente
+O sistema pode:
+- Recomendar ações (ex.: abrir janelas, ligar ventilação, reduzir barulho)
+- Ajustar automaticamente dispositivos conectados
+- Ajudar gestores a manter ambientes sempre adequados
 
 
 ---
