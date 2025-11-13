@@ -769,10 +769,6 @@ pip install paho-mqtt` → `python app.py`.
 
 Projeto educacional — FIAP
 
-**Autores:** Equipe FiapSense (nomes na seção Integrantes)
-
-Licença: MIT (sinta-se livre para adaptar para seu repositório acadêmico)
+**Autores:** Equipe FiapSense
 
 ---
-
-<!-- Fim do README -->
