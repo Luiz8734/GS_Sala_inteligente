@@ -55,9 +55,9 @@ FiapSense é um sistema de monitoramento ambiental que lê sensores (temperatura
 
 ### Aplicação Web
 
-*(<img width="678" height="150" alt="image" src="https://github.com/user-attachments/assets/1241963b-8673-4c8c-ad1e-587931354b41" />
+*(<img width="878" height="350" alt="image" src="https://github.com/user-attachments/assets/1241963b-8673-4c8c-ad1e-587931354b41" />
  / dashboard)*
-*(<img width="518" height="595" alt="image" src="https://github.com/user-attachments/assets/f25b04a6-7c0c-43c4-bbda-301689046131" />
+*(<img width="718" height="795" alt="image" src="https://github.com/user-attachments/assets/f25b04a6-7c0c-43c4-bbda-301689046131" />
 / dashboard)*
 
 ---
