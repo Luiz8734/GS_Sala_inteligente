@@ -128,7 +128,6 @@ O sistema pode:
 * Microfone (por exemplo KY-037) — entrada analógica
 * Sensor ultrassônico (HC-SR04) — TRIG / ECHO (ou usar biblioteca NewPing)
 * Display LCD I2C 16x2 (endereço geralmente 0x27)
-* Buzzer (piezo)
 * LEDs (3 cores ou 3 LEDs separados)
 * Botão (INPUT_PULLUP) para entrar/sair do modo pausa
 * Potenciômetro (opcional) — p.ex. para ajustar brilho / threshold
@@ -519,8 +518,6 @@ void loop() {
 * Ajuste `alertaRuido` dependendo do microfone (valor analógico pode variar muito). Use `Serial.println(ruidoRaw)` para calibrar.
 * `lerLuz()` assume divisor do LDR com referência 3.3V e leitura invertida; adapte se necessário.
 * `map(..., 0, 4095, 0, 100)` transforma leitura ADC para porcentagem.
-* `tone()` é usado para o buzzer; em alguns firmwares/tars, pode haver limitações no PWM.
-
 ---
 
 ## 8. Aplicação Web (Flask)
